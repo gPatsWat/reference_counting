@@ -1,6 +1,9 @@
-#include "lib/ref.hh"
+#include "include/ref.hh"
+
+mem_allocator mallocator;
 
 int main(int argc) {
-    Object* a = new_object();
+
+    Object* a = mallocator.new_object();
     return 0;
 }

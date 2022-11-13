@@ -19,45 +19,30 @@ class Object {
     //Copy constructor
     Object(volatile Object& o): r_count(o.r_count) {}
 
-
-    virtual Object* new_object() = 0;
-    virtual Object write(Object* src, int i, Object* ref) = 0;
-
     private:
-    virtual Object* allocate() = 0;
 
-    int rc() {
-        return this->r_count;
-    }
+    int rc();
 };
 
-class Object_v1 : Object {
+class Object_v1 : public Object {
     public:
     Object_v1(): Object() {}
     Object_v1(char* data): data(data) {}
     Object_v1(volatile Object_v1& o): Object(o), data(o.data) {}
 
-    Object* new_object() {
-        Object* ref = allocate();
-        if( ref == nullptr ) {
-            throw std::runtime_error("Out of memory!");
-        }
-        return ref;
-    }
-
-    Object write(Object* src, int i, Object* ref) {
-
-    }
-
     private:
     char* data;
+};
+
+class mem_allocator {
+    public:
+
+    Object* new_object();
+
+    void write(Object* src, int i, Object* ref);
+
+    private:
 
     //global heap allocator
-    Object* allocate() {
-        for(int i = 0;i < MAX_SIZE;i++) {
-            if(heap[i] == '#')
-                return new Object_v1(&heap[i]);
-        }
-        return nullptr;
-    }
+    Object_v1* allocate();
 };
